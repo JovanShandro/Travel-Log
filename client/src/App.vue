@@ -1,25 +1,10 @@
 <template>
-  <img
-    alt="Vue logo"
-    src="./assets/logo.png"
-  >
-  <HelloWorld />
+  <div>App</div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-
-export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-};
+export default {};
 </script>
 
 <style>
-input[type="text"] {
-  margin-bottom: 20px;
-  padding: 10px;
-}
 </style>
