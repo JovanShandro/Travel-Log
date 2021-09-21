@@ -6,15 +6,22 @@ import express from 'express';
 import http from 'http';
 import { buildSchema, NonEmptyArray } from 'type-graphql';
 
-export default async (resolvers: NonEmptyArray<any> | NonEmptyArray<string>): Promise<void> => {
+export default async (
+  resolvers: NonEmptyArray<any> | NonEmptyArray<string>,
+): Promise<void> => {
   const app = express();
   const httpServer = http.createServer(app);
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [...resolvers],
+      validate: false,
     }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: ({ req, res }) => ({
+      req,
+      res,
+    }),
   });
 
   await apolloServer.start();
@@ -26,7 +33,11 @@ export default async (resolvers: NonEmptyArray<any> | NonEmptyArray<string>): Pr
     }),
   );
 
-  await new Promise((resolve) => httpServer.listen({ port: PORT }, () => resolve(null)));
+  await new Promise((resolve) =>
+    httpServer.listen({ port: PORT }, () => resolve(null)),
+  );
 
-  console.log(`🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+  console.log(
+    `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`,
+  );
 };
