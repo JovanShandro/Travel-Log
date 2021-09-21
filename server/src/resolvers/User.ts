@@ -1,13 +1,16 @@
+import { COOKIE_NAME } from '@/constants';
 import { User } from '@/entities/User';
+import { Context } from '@/types';
 import { promise } from '@/utils';
 import argon2 from 'argon2';
 import {
   Arg,
+  Ctx,
   Field,
-  Query,
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from 'type-graphql';
 
@@ -37,14 +40,27 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
-  @Query()
-  test(): string {
-    return 'It works!';
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: Context): Promise<any> {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const { userId } = req.session;
+
+    const [error, user] = await promise(User.findOne(userId));
+    if (error) {
+      console.log('Error when reading user with id: ', userId);
+      return null;
+    }
+
+    return user;
   }
 
   @Mutation(() => UserResponse)
   async register(
     @Arg('options') options: UsernamePasswordInput,
+    @Ctx() { req }: Context,
   ): Promise<UserResponse> {
     if (options.username.length < 2) {
       return {
@@ -86,6 +102,8 @@ export class UserResolver {
       };
     }
 
+    req.session.userId = user.id;
+
     return {
       user,
     };
@@ -94,6 +112,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async login(
     @Arg('options') options: UsernamePasswordInput,
+    @Ctx() { req }: Context,
   ): Promise<UserResponse> {
     const user = await User.findOne({ where: { username: options.username } });
 
@@ -121,8 +140,25 @@ export class UserResolver {
       };
     }
 
+    req.session.userId = user.id;
+
     return {
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { req, res }: Context): Promise<boolean> {
+    return await new Promise((resolve) => {
+      req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME);
+        if (err) {
+          console.log('Error while destroying session: ', err);
+          resolve(false);
+          return;
+        }
+        resolve(true);
+      });
+    });
   }
 }

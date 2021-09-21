@@ -1,10 +1,22 @@
-import { PORT } from '@/constants';
+import {
+  PORT,
+  SESSION_SECRET,
+  CORS_ORIGIN,
+  __DEV__,
+  COOKIE_NAME,
+} from '@/constants';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import { buildSchema, NonEmptyArray } from 'type-graphql';
+import redis from 'redis';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+
+const RedisStore = connectRedis(session);
+const redisClient = redis.createClient();
 
 export default async (
   resolvers: NonEmptyArray<any> | NonEmptyArray<string>,
@@ -25,13 +37,34 @@ export default async (
   });
 
   await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
+
+  app.use(
+    session({
+      name: COOKIE_NAME,
+      store: new RedisStore({
+        client: redisClient,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 5 * 365 * 24 * 60 * 60 * 1000, // 5 years
+        httpOnly: true,
+        sameSite: 'none',
+        secure: !__DEV__,
+      },
+      saveUninitialized: false,
+      secret: SESSION_SECRET,
+      resave: false,
+    }),
+  );
 
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN,
+      origin: [CORS_ORIGIN],
+      credentials: true,
     }),
   );
+
+  apolloServer.applyMiddleware({ app, cors: false });
 
   await new Promise((resolve) =>
     httpServer.listen({ port: PORT }, () => resolve(null)),
