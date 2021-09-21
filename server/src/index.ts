@@ -1,11 +1,12 @@
 import { config } from 'dotenv';
 config();
 
+import 'reflect-metadata';
 import 'module-alias/register';
-import app from '@/app';
-import { PORT } from '@/constants';
+import startApolloServer from '@/app';
 import { createConnection } from 'typeorm';
 import { User } from '@/entities/User';
+import { UserResolver } from '@/resolvers/User';
 
 const main = async () => {
   await createConnection({
@@ -16,9 +17,7 @@ const main = async () => {
     entities: [User],
   });
 
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-  });
+  await startApolloServer([UserResolver]);
 };
 
 main();

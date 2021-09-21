@@ -1,12 +1,32 @@
-import express from 'express';
+import { PORT } from '@/constants';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
+import express from 'express';
+import http from 'http';
+import { buildSchema, NonEmptyArray } from 'type-graphql';
 
-const app = express();
+export default async (resolvers: NonEmptyArray<any> | NonEmptyArray<string>): Promise<void> => {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN,
-  }),
-);
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [...resolvers],
+    }),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
 
-export default app;
+  await apolloServer.start();
+  apolloServer.applyMiddleware({ app });
+
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN,
+    }),
+  );
+
+  await new Promise((resolve) => httpServer.listen({ port: PORT }, () => resolve(null)));
+
+  console.log(`🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`);
+};
