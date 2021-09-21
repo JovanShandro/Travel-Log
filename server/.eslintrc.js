@@ -10,6 +10,7 @@ module.exports = {
     node: true,
   },
   rules: {
+    '@typescript-eslint/no-explicit-any': 0,
     'no-var': 'error',
     semi: 'error',
     indent: ['error', 2, { SwitchCase: 1 }],
