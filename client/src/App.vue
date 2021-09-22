@@ -1,24 +1,11 @@
 <template>
   <div>
-    App
-    <div>
-      <div>{{ result }}</div>
-      <div>{{ loading }}</div>
-    </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script lang="ts">
-import { useMeQuery } from './generated/graphql';
-export default {
-  setup() {
-    const { result, loading } = useMeQuery();
-    return {
-      result,
-      loading,
-    };
-  },
-};
+export default {};
 </script>
 
 <style>
