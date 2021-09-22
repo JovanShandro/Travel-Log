@@ -61,6 +61,16 @@ export type UsernamePasswordInput = {
   username: Scalars['String'];
 };
 
+export type ErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
+
+export type UserFragment = { __typename?: 'User'; id: number; username: string };
+
+export type UserResponseFragment = {
+  __typename?: 'UserResponse';
+  errors?: Maybe<Array<{ __typename?: 'FieldError'; field: string; message: string }>>;
+  user?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
+};
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -93,19 +103,44 @@ export type RegisterMutation = {
   };
 };
 
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeQuery = {
+  __typename?: 'Query';
+  me?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
+};
+
+export const ErrorFragmentDoc = gql`
+  fragment Error on FieldError {
+    field
+    message
+  }
+`;
+export const UserFragmentDoc = gql`
+  fragment User on User {
+    id
+    username
+  }
+`;
+export const UserResponseFragmentDoc = gql`
+  fragment UserResponse on UserResponse {
+    errors {
+      ...Error
+    }
+    user {
+      ...User
+    }
+  }
+  ${ErrorFragmentDoc}
+  ${UserFragmentDoc}
+`;
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
     login(options: { username: $username, password: $password }) {
-      errors {
-        field
-        message
-      }
-      user {
-        id
-        username
-      }
+      ...UserResponse
     }
   }
+  ${UserResponseFragmentDoc}
 `;
 
 /**
@@ -180,16 +215,10 @@ export type LogoutMutationCompositionFunctionResult = VueApolloComposable.UseMut
 export const RegisterDocument = gql`
   mutation Register($username: String!, $password: String!) {
     register(options: { username: $username, password: $password }) {
-      errors {
-        field
-        message
-      }
-      user {
-        id
-        username
-      }
+      ...UserResponse
     }
   }
+  ${UserResponseFragmentDoc}
 `;
 
 /**
@@ -226,3 +255,37 @@ export type RegisterMutationCompositionFunctionResult = VueApolloComposable.UseM
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const MeDocument = gql`
+  query Me {
+    me {
+      ...User
+    }
+  }
+  ${UserFragmentDoc}
+`;
+
+/**
+ * __useMeQuery__
+ *
+ * To run a query within a Vue component, call `useMeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMeQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useMeQuery();
+ */
+export function useMeQuery(
+  options:
+    | VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>
+    | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>>
+    | ReactiveFunction<VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>> = {},
+) {
+  return VueApolloComposable.useQuery<MeQuery, MeQueryVariables>(MeDocument, {}, options as any);
+}
+export type MeQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<
+  MeQuery,
+  MeQueryVariables
+>;
+

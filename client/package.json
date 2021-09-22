@@ -10,17 +10,21 @@
     "gen": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
-    "@vue/apollo-composable": "^4.0.0-alpha.15",
+    "@apollo/client": "^3.4.13",
+    "@vue/apollo-composable": "^4.0.0-alpha.8",
     "@vue/composition-api": "^1.1.5",
     "graphql": "^15.6.0",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-apollo": "^3.0.8"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.2.0",
     "@graphql-codegen/introspection": "2.1.0",
+    "@graphql-codegen/typed-document-node": "^2.1.4",
     "@graphql-codegen/typescript": "2.2.2",
     "@graphql-codegen/typescript-operations": "^2.1.4",
     "@graphql-codegen/typescript-vue-apollo": "^3.1.4",
+    "@graphql-typed-document-node/core": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
