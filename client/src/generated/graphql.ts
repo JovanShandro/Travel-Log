@@ -2,9 +2,15 @@ import gql from 'graphql-tag';
 import * as VueApolloComposable from '@vue/apollo-composable';
 import * as VueCompositionApi from '@vue/composition-api';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]?: Maybe<T[SubKey]>;
+};
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
+  [SubKey in K]: Maybe<T[SubKey]>;
+};
 export type ReactiveFunction<TParam> = () => TParam;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -61,13 +67,23 @@ export type UsernamePasswordInput = {
   username: Scalars['String'];
 };
 
-export type ErrorFragment = { __typename?: 'FieldError'; field: string; message: string };
+export type ErrorFragment = {
+  __typename?: 'FieldError';
+  field: string;
+  message: string;
+};
 
-export type UserFragment = { __typename?: 'User'; id: number; username: string };
+export type UserFragment = {
+  __typename?: 'User';
+  id: number;
+  username: string;
+};
 
 export type UserResponseFragment = {
   __typename?: 'UserResponse';
-  errors?: Maybe<Array<{ __typename?: 'FieldError'; field: string; message: string }>>;
+  errors?: Maybe<
+    Array<{ __typename?: 'FieldError'; field: string; message: string }>
+  >;
   user?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
 };
 
@@ -80,7 +96,9 @@ export type LoginMutation = {
   __typename?: 'Mutation';
   login: {
     __typename?: 'UserResponse';
-    errors?: Maybe<Array<{ __typename?: 'FieldError'; field: string; message: string }>>;
+    errors?: Maybe<
+      Array<{ __typename?: 'FieldError'; field: string; message: string }>
+    >;
     user?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
   };
 };
@@ -98,7 +116,9 @@ export type RegisterMutation = {
   __typename?: 'Mutation';
   register: {
     __typename?: 'UserResponse';
-    errors?: Maybe<Array<{ __typename?: 'FieldError'; field: string; message: string }>>;
+    errors?: Maybe<
+      Array<{ __typename?: 'FieldError'; field: string; message: string }>
+    >;
     user?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
   };
 };
@@ -163,9 +183,15 @@ export const LoginDocument = gql`
  */
 export function useLoginMutation(
   options:
-    | VueApolloComposable.UseMutationOptions<LoginMutation, LoginMutationVariables>
+    | VueApolloComposable.UseMutationOptions<
+        LoginMutation,
+        LoginMutationVariables
+      >
     | ReactiveFunction<
-        VueApolloComposable.UseMutationOptions<LoginMutation, LoginMutationVariables>
+        VueApolloComposable.UseMutationOptions<
+          LoginMutation,
+          LoginMutationVariables
+        >
       >,
 ) {
   return VueApolloComposable.useMutation<LoginMutation, LoginMutationVariables>(
@@ -173,10 +199,8 @@ export function useLoginMutation(
     options,
   );
 }
-export type LoginMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<
-  LoginMutation,
-  LoginMutationVariables
->;
+export type LoginMutationCompositionFunctionResult =
+  VueApolloComposable.UseMutationReturn<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = gql`
   mutation Logout {
     logout
@@ -198,20 +222,27 @@ export const LogoutDocument = gql`
  */
 export function useLogoutMutation(
   options:
-    | VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables>
+    | VueApolloComposable.UseMutationOptions<
+        LogoutMutation,
+        LogoutMutationVariables
+      >
     | ReactiveFunction<
-        VueApolloComposable.UseMutationOptions<LogoutMutation, LogoutMutationVariables>
+        VueApolloComposable.UseMutationOptions<
+          LogoutMutation,
+          LogoutMutationVariables
+        >
       > = {},
 ) {
-  return VueApolloComposable.useMutation<LogoutMutation, LogoutMutationVariables>(
-    LogoutDocument,
-    options,
-  );
+  return VueApolloComposable.useMutation<
+    LogoutMutation,
+    LogoutMutationVariables
+  >(LogoutDocument, options);
 }
-export type LogoutMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<
-  LogoutMutation,
-  LogoutMutationVariables
->;
+export type LogoutMutationCompositionFunctionResult =
+  VueApolloComposable.UseMutationReturn<
+    LogoutMutation,
+    LogoutMutationVariables
+  >;
 export const RegisterDocument = gql`
   mutation Register($username: String!, $password: String!) {
     register(options: { username: $username, password: $password }) {
@@ -241,20 +272,27 @@ export const RegisterDocument = gql`
  */
 export function useRegisterMutation(
   options:
-    | VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables>
+    | VueApolloComposable.UseMutationOptions<
+        RegisterMutation,
+        RegisterMutationVariables
+      >
     | ReactiveFunction<
-        VueApolloComposable.UseMutationOptions<RegisterMutation, RegisterMutationVariables>
+        VueApolloComposable.UseMutationOptions<
+          RegisterMutation,
+          RegisterMutationVariables
+        >
       >,
 ) {
-  return VueApolloComposable.useMutation<RegisterMutation, RegisterMutationVariables>(
-    RegisterDocument,
-    options,
-  );
+  return VueApolloComposable.useMutation<
+    RegisterMutation,
+    RegisterMutationVariables
+  >(RegisterDocument, options);
 }
-export type RegisterMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<
-  RegisterMutation,
-  RegisterMutationVariables
->;
+export type RegisterMutationCompositionFunctionResult =
+  VueApolloComposable.UseMutationReturn<
+    RegisterMutation,
+    RegisterMutationVariables
+  >;
 export const MeDocument = gql`
   query Me {
     me {
@@ -279,13 +317,18 @@ export const MeDocument = gql`
 export function useMeQuery(
   options:
     | VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>
-    | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>>
-    | ReactiveFunction<VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>> = {},
+    | VueCompositionApi.Ref<
+        VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>
+      >
+    | ReactiveFunction<
+        VueApolloComposable.UseQueryOptions<MeQuery, MeQueryVariables>
+      > = {},
 ) {
-  return VueApolloComposable.useQuery<MeQuery, MeQueryVariables>(MeDocument, {}, options as any);
+  return VueApolloComposable.useQuery<MeQuery, MeQueryVariables>(
+    MeDocument,
+    {},
+    options as any,
+  );
 }
-export type MeQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<
-  MeQuery,
-  MeQueryVariables
->;
-
+export type MeQueryCompositionFunctionResult =
+  VueApolloComposable.UseQueryReturn<MeQuery, MeQueryVariables>;
