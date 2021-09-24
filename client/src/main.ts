@@ -7,7 +7,6 @@ import {
 } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createApp, h, provide } from 'vue';
-import { authStoreSymbol, createAuthStore } from './store';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8000/graphql',
@@ -24,7 +23,6 @@ const apolloClient = new ApolloClient({
 createApp({
   setup() {
     provide(DefaultApolloClient, apolloClient);
-    provide(authStoreSymbol, createAuthStore());
   },
 
   render: () => h(App),

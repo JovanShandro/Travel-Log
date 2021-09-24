@@ -35,12 +35,10 @@ import {
   MeDocument,
 } from '@/generated/graphql';
 import { formatErrors } from '@/utils';
-import { useAuthStore } from '@/store';
 import { useRouter } from 'vue-router';
 
 export default {
   setup() {
-    const authStore = useAuthStore();
     const router = useRouter();
 
     // Form state
@@ -104,7 +102,6 @@ export default {
         },
       );
       formErrors.value = formatErrors(errors);
-      authStore.user = user;
 
       if (!errors) {
         localStorage.setItem('username', user.username);
