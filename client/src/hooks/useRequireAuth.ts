@@ -7,7 +7,6 @@ export const useRequireAuth = () => {
   const authStore = useAuthStore();
 
   watchEffect(() => {
-    console.log('UseReqAuth: ', authStore);
     if (!authStore.user) {
       router.replace('/auth');
     }
