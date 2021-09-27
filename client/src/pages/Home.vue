@@ -25,11 +25,7 @@
 
 <script lang="ts">
 import { MapboxMap } from 'vue-mapbox-ts';
-import {
-  useLogoutMutation,
-  useMeQuery,
-  LogEntriesDocument,
-} from '@/generated/graphql';
+import { useLogoutMutation, LogEntriesDocument } from '@/generated/graphql';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue-demi';

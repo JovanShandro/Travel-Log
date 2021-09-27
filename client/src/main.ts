@@ -7,7 +7,7 @@ import {
 } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import { createApp, h, provide } from 'vue';
-import VueMapboxTs from "vue-mapbox-ts";
+import VueMapboxTs from 'vue-mapbox-ts';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8000/graphql',

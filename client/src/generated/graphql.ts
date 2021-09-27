@@ -527,4 +527,3 @@ export function useMeQuery(
 }
 export type MeQueryCompositionFunctionResult =
   VueApolloComposable.UseQueryReturn<MeQuery, MeQueryVariables>;
-
