@@ -1,19 +1,13 @@
-import {
-  PORT,
-  SESSION_SECRET,
-  CORS_ORIGIN,
-  __DEV__,
-  COOKIE_NAME,
-} from '@/constants';
+import { COOKIE_NAME, CORS_ORIGIN, PORT, SESSION_SECRET } from '@/constants';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
+import connectRedis from 'connect-redis';
 import cors from 'cors';
 import express from 'express';
-import http from 'http';
-import { buildSchema, NonEmptyArray } from 'type-graphql';
-import redis from 'redis';
 import session from 'express-session';
-import connectRedis from 'connect-redis';
+import http from 'http';
+import redis from 'redis';
+import { buildSchema, NonEmptyArray } from 'type-graphql';
 
 const RedisStore = connectRedis(session);
 const redisClient = redis.createClient();
@@ -49,7 +43,7 @@ export default async (
         maxAge: 5 * 365 * 24 * 60 * 60 * 1000, // 5 years
         httpOnly: true,
         sameSite: 'none',
-        secure: !__DEV__,
+        secure: true,
       },
       saveUninitialized: false,
       secret: SESSION_SECRET,
@@ -59,7 +53,8 @@ export default async (
 
   app.use(
     cors({
-      origin: [CORS_ORIGIN],
+      //origin: [CORS_ORIGIN],
+      origin: [CORS_ORIGIN, 'https://studio.apollographql.com'],
       credentials: true,
     }),
   );

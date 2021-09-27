@@ -7,6 +7,8 @@ import startApolloServer from '@/app';
 import { createConnection } from 'typeorm';
 import { User } from '@/entities/User';
 import { UserResolver } from '@/resolvers/User';
+import { LogEntry } from './entities/LogEntry';
+import { LogEntryResolver } from './resolvers/LogEntry';
 
 const main = async () => {
   await createConnection({
@@ -14,10 +16,10 @@ const main = async () => {
     type: 'postgres',
     url: process.env.DATABASE_URL,
     logging: true,
-    entities: [User],
+    entities: [User, LogEntry],
   });
 
-  await startApolloServer([UserResolver]);
+  await startApolloServer([UserResolver, LogEntryResolver]);
 };
 
 main();
