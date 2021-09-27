@@ -32,11 +32,11 @@ export class LogEntry extends BaseEntity {
   image: string;
 
   @Field()
-  @Column()
+  @Column({ type: 'float' })
   longitude!: number;
 
   @Field()
-  @Column()
+  @Column({ type: 'float' })
   latitude!: number;
 
   @Field(() => String)
