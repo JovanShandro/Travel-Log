@@ -1,4 +1,10 @@
-import { COOKIE_NAME, CORS_ORIGIN, PORT, SESSION_SECRET } from '@/constants';
+import {
+  COOKIE_NAME,
+  CORS_ORIGIN,
+  PORT,
+  SESSION_SECRET,
+  __DEV__,
+} from '@/constants';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-express';
 import connectRedis from 'connect-redis';
@@ -42,8 +48,8 @@ export default async (
       cookie: {
         maxAge: 5 * 365 * 24 * 60 * 60 * 1000, // 5 years
         httpOnly: true,
-        sameSite: 'none',
-        secure: true,
+        sameSite: 'lax',
+        secure: !__DEV__,
       },
       saveUninitialized: false,
       secret: SESSION_SECRET,
@@ -53,8 +59,7 @@ export default async (
 
   app.use(
     cors({
-      //origin: [CORS_ORIGIN],
-      origin: [CORS_ORIGIN, 'https://studio.apollographql.com'],
+      origin: [CORS_ORIGIN],
       credentials: true,
     }),
   );
