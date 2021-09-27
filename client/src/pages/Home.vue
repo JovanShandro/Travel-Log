@@ -1,38 +1,89 @@
 <template>
-  <div>
-    Home
+  <div class="full-height">
     <button @click="logout">Logout</button>
-    <div>
-      <div>{{ result }}</div>
-      <div>{{ loading }}</div>
-    </div>
+    <mapbox-map :accessToken="accessToken" mapStyle="light-v10">
+      <mapbox-marker
+        v-for="entry in logEntries"
+        :lngLat="[entry.longitude, entry.latitude]"
+        :key="entry.id"
+      >
+        <mapbox-popup>
+          <div className="popup">
+            <img v-if="entry.image" :src="entry.image" :alt="entry.title" />
+            <h3>{{ entry.title }}</h3>
+            <p>{{ entry.comments }}</p>
+            <small>
+              Visited on:
+              {{ new Date(+entry.visitDate).toLocaleDateString() }}
+            </small>
+          </div>
+        </mapbox-popup>
+      </mapbox-marker>
+    </mapbox-map>
   </div>
 </template>
 
 <script lang="ts">
-import { useLogoutMutation, useMeQuery } from '@/generated/graphql';
+import { MapboxMap } from 'vue-mapbox-ts';
+import {
+  useLogoutMutation,
+  useMeQuery,
+  LogEntriesDocument,
+} from '@/generated/graphql';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { useRouter } from 'vue-router';
+import { onMounted } from 'vue-demi';
+import { inject, ref } from 'vue';
+import { DefaultApolloClient } from '@vue/apollo-composable';
 
 export default {
+  components: {
+    MapboxMap,
+  },
   setup() {
     useRequireAuth();
     const router = useRouter();
-    const { result, loading } = useMeQuery();
+    const logEntries = ref([]);
     const { mutate } = useLogoutMutation();
+
+    const apolloClient: any = inject(DefaultApolloClient);
+
+    onMounted(async () => {
+      const { data } = await apolloClient.query({
+        query: LogEntriesDocument,
+      });
+      logEntries.value = data.logEntries;
+    });
 
     const logout = async () => {
       await mutate();
       localStorage.removeItem('username');
       router.push('/auth');
     };
+
     return {
-      result,
-      loading,
       logout,
+      logEntries,
+      accessToken: process.env.VUE_APP_MAPBOX_TOKEN,
+      mapStyle: 'dark',
     };
   },
 };
 </script>
 
-<style></style>
+<style>
+.full-height {
+  width: 100%;
+  height: 100%;
+}
+.popup {
+  min-width: 200px;
+}
+.popup img {
+  height: 200px;
+  width: auto;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+</style>

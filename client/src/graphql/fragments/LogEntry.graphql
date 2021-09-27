@@ -1,0 +1,12 @@
+fragment LogEntry on LogEntry {
+  id
+  title
+  image
+  description
+  comments
+  longitude
+  latitude
+  visitDate
+  createdAt
+  updatedAt
+}

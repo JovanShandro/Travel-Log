@@ -1,0 +1,5 @@
+mutation CreateLogEntry($data: LogEntryInput!) {
+  createLogEntry(data: $data) {
+    ...LogEntry
+  }
+}

@@ -27,11 +27,41 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type LogEntry = {
+  __typename?: 'LogEntry';
+  comments: Scalars['String'];
+  createdAt: Scalars['String'];
+  creatorId: Scalars['Float'];
+  description: Scalars['String'];
+  id: Scalars['Float'];
+  image: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  title: Scalars['String'];
+  updatedAt: Scalars['String'];
+  visitDate: Scalars['String'];
+};
+
+export type LogEntryInput = {
+  comments: Scalars['String'];
+  description: Scalars['String'];
+  image: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+  title: Scalars['String'];
+  visitDate: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createLogEntry: LogEntry;
   login: UserResponse;
   logout: Scalars['Boolean'];
   register: UserResponse;
+};
+
+export type MutationCreateLogEntryArgs = {
+  data: LogEntryInput;
 };
 
 export type MutationLoginArgs = {
@@ -44,6 +74,7 @@ export type MutationRegisterArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  logEntries: Array<LogEntry>;
   me?: Maybe<User>;
 };
 
@@ -73,6 +104,20 @@ export type ErrorFragment = {
   message: string;
 };
 
+export type LogEntryFragment = {
+  __typename?: 'LogEntry';
+  id: number;
+  title: string;
+  image: string;
+  description: string;
+  comments: string;
+  longitude: number;
+  latitude: number;
+  visitDate: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type UserFragment = {
   __typename?: 'User';
   id: number;
@@ -85,6 +130,27 @@ export type UserResponseFragment = {
     Array<{ __typename?: 'FieldError'; field: string; message: string }>
   >;
   user?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
+};
+
+export type CreateLogEntryMutationVariables = Exact<{
+  data: LogEntryInput;
+}>;
+
+export type CreateLogEntryMutation = {
+  __typename?: 'Mutation';
+  createLogEntry: {
+    __typename?: 'LogEntry';
+    id: number;
+    title: string;
+    image: string;
+    description: string;
+    comments: string;
+    longitude: number;
+    latitude: number;
+    visitDate: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 };
 
 export type LoginMutationVariables = Exact<{
@@ -123,6 +189,25 @@ export type RegisterMutation = {
   };
 };
 
+export type LogEntriesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LogEntriesQuery = {
+  __typename?: 'Query';
+  logEntries: Array<{
+    __typename?: 'LogEntry';
+    id: number;
+    title: string;
+    image: string;
+    description: string;
+    comments: string;
+    longitude: number;
+    latitude: number;
+    visitDate: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+};
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = {
@@ -130,6 +215,20 @@ export type MeQuery = {
   me?: Maybe<{ __typename?: 'User'; id: number; username: string }>;
 };
 
+export const LogEntryFragmentDoc = gql`
+  fragment LogEntry on LogEntry {
+    id
+    title
+    image
+    description
+    comments
+    longitude
+    latitude
+    visitDate
+    createdAt
+    updatedAt
+  }
+`;
 export const ErrorFragmentDoc = gql`
   fragment Error on FieldError {
     field
@@ -154,6 +253,55 @@ export const UserResponseFragmentDoc = gql`
   ${ErrorFragmentDoc}
   ${UserFragmentDoc}
 `;
+export const CreateLogEntryDocument = gql`
+  mutation CreateLogEntry($data: LogEntryInput!) {
+    createLogEntry(data: $data) {
+      ...LogEntry
+    }
+  }
+  ${LogEntryFragmentDoc}
+`;
+
+/**
+ * __useCreateLogEntryMutation__
+ *
+ * To run a mutation, you first call `useCreateLogEntryMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLogEntryMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateLogEntryMutation({
+ *   variables: {
+ *     data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateLogEntryMutation(
+  options:
+    | VueApolloComposable.UseMutationOptions<
+        CreateLogEntryMutation,
+        CreateLogEntryMutationVariables
+      >
+    | ReactiveFunction<
+        VueApolloComposable.UseMutationOptions<
+          CreateLogEntryMutation,
+          CreateLogEntryMutationVariables
+        >
+      >,
+) {
+  return VueApolloComposable.useMutation<
+    CreateLogEntryMutation,
+    CreateLogEntryMutationVariables
+  >(CreateLogEntryDocument, options);
+}
+export type CreateLogEntryMutationCompositionFunctionResult =
+  VueApolloComposable.UseMutationReturn<
+    CreateLogEntryMutation,
+    CreateLogEntryMutationVariables
+  >;
 export const LoginDocument = gql`
   mutation Login($username: String!, $password: String!) {
     login(options: { username: $username, password: $password }) {
@@ -293,6 +441,53 @@ export type RegisterMutationCompositionFunctionResult =
     RegisterMutation,
     RegisterMutationVariables
   >;
+export const LogEntriesDocument = gql`
+  query LogEntries {
+    logEntries {
+      ...LogEntry
+    }
+  }
+  ${LogEntryFragmentDoc}
+`;
+
+/**
+ * __useLogEntriesQuery__
+ *
+ * To run a query within a Vue component, call `useLogEntriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLogEntriesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useLogEntriesQuery();
+ */
+export function useLogEntriesQuery(
+  options:
+    | VueApolloComposable.UseQueryOptions<
+        LogEntriesQuery,
+        LogEntriesQueryVariables
+      >
+    | VueCompositionApi.Ref<
+        VueApolloComposable.UseQueryOptions<
+          LogEntriesQuery,
+          LogEntriesQueryVariables
+        >
+      >
+    | ReactiveFunction<
+        VueApolloComposable.UseQueryOptions<
+          LogEntriesQuery,
+          LogEntriesQueryVariables
+        >
+      > = {},
+) {
+  return VueApolloComposable.useQuery<
+    LogEntriesQuery,
+    LogEntriesQueryVariables
+  >(LogEntriesDocument, {}, options as any);
+}
+export type LogEntriesQueryCompositionFunctionResult =
+  VueApolloComposable.UseQueryReturn<LogEntriesQuery, LogEntriesQueryVariables>;
 export const MeDocument = gql`
   query Me {
     me {
@@ -332,3 +527,4 @@ export function useMeQuery(
 }
 export type MeQueryCompositionFunctionResult =
   VueApolloComposable.UseQueryReturn<MeQuery, MeQueryVariables>;
+
