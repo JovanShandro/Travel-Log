@@ -1,6 +1,8 @@
 <template>
-  <div class="full-height">
-    <button @click="logout">Logout</button>
+  <main class="full-height">
+    <button class="logout" @click="logout">
+      <img src="../assets/logout.png" alt="log_out" />
+    </button>
     <mapbox-map :accessToken="accessToken" mapStyle="light-v10">
       <mapbox-marker
         v-for="entry in logEntries"
@@ -20,7 +22,7 @@
         </mapbox-popup>
       </mapbox-marker>
     </mapbox-map>
-  </div>
+  </main>
 </template>
 
 <script lang="ts">
@@ -67,10 +69,27 @@ export default {
 };
 </script>
 
-<style>
-.full-height {
+<style scoped>
+main {
   width: 100%;
   height: 100%;
+}
+.logout {
+  position: fixed;
+  left: 20px;
+  top: 20px;
+  height: 50px;
+  width: 50px;
+  border-radius: 25px;
+  z-index: 2;
+  background: black;
+  border: 0;
+}
+
+.logout img {
+  width: 20px;
+  margin-left: 4px;
+  filter: invert();
 }
 .popup {
   min-width: 200px;
