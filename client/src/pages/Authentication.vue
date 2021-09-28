@@ -22,6 +22,9 @@
           }}</span>
         </div>
       </div>
+      <div v-if="unknownErrorOccured" class="error">
+        An error occured! Please try again later!
+      </div>
       <button>Submit</button>
     </form>
   </main>
@@ -34,7 +37,7 @@ import {
   useRegisterMutation,
   MeDocument,
 } from '@/generated/graphql';
-import { formatErrors } from '@/utils';
+import { formatErrors } from '@/lib/utils';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -45,6 +48,7 @@ export default {
     const username = ref('');
     const password = ref('');
     const formErrors = ref({});
+    const unknownErrorOccured = ref(false);
 
     // Grapql mutations
     const { mutate: login } = useLoginMutation();
@@ -79,45 +83,50 @@ export default {
       else action.value = 'register';
     };
     const onSubmit = async () => {
+      // Reset errors
       formErrors.value = {};
-      const {
-        data: {
-          [action.value]: { errors, user },
-        },
-      } = await mutations[action.value](
-        {
-          username: username.value,
-          password: password.value,
-        },
-        {
-          update: (cache, { data }) => {
-            cache.writeQuery({
-              query: MeDocument,
-              data: {
-                __typename: 'Query',
-                me: data[action.value].user,
-              },
-            });
-          },
-        },
-      );
-      formErrors.value = formatErrors(errors);
+      unknownErrorOccured.value = false;
 
-      if (!errors) {
-        localStorage.setItem('username', user.username);
-        router.push('/');
+      try {
+        const response = await mutations[action.value](
+          {
+            username: username.value,
+            password: password.value,
+          },
+          {
+            update: (cache, { data }) => {
+              cache.writeQuery({
+                query: MeDocument,
+                data: {
+                  __typename: 'Query',
+                  me: data[action.value].user,
+                },
+              });
+            },
+          },
+        );
+        const { errors, user } = response.data[action.value];
+        formErrors.value = formatErrors(errors);
+
+        if (!errors) {
+          localStorage.setItem('username', user.username);
+          router.push('/');
+        }
+      } catch (e) {
+        unknownErrorOccured.value = true;
       }
     };
 
     return {
       username,
       password,
-      action,
-      title,
-      onSubmit,
-      toggleAction,
-      linkData,
       formErrors,
+      unknownErrorOccured,
+      linkData,
+      title,
+      action,
+      toggleAction,
+      onSubmit,
     };
   },
 };

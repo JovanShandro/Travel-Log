@@ -9,7 +9,7 @@
     <label class="label">Image Url</label>
     <input class="input" type="text" v-model="image" />
     <label class="label">Visit Date</label>
-    <input class="input" type="text" v-model="visitDate" />
+    <input class="input" type="date" v-model="visitDate" />
     <div v-if="errorOccured" class="error">An error occured!</div>
     <button class="btn">Create Entry</button>
   </form>
@@ -18,10 +18,12 @@
 <script>
 import { ref } from 'vue';
 import { useCreateLogEntryMutation } from '@/generated/graphql';
+import { useStore } from 'vuex';
 
 export default {
-  props: ['handleClose', 'coordinates', 'updateLogEntries'],
-  setup(props) {
+  setup() {
+    const store = useStore();
+
     const title = ref('');
     const comments = ref('');
     const description = ref('');
@@ -31,23 +33,27 @@ export default {
     const { mutate } = useCreateLogEntryMutation();
 
     const onSubmit = async () => {
-      errorOccured.value = false;
       const newEntry = {
         title: title.value,
         comments: comments.value,
         image: image.value,
         visitDate: visitDate.value,
         description: description.value,
-        longitude: props.coordinates.lng,
-        latitude: props.coordinates.lat,
+        longitude: store.state.addEntryLocation.lng,
+        latitude: store.state.addEntryLocation.lat,
       };
+      errorOccured.value = false;
+
       try {
+        // Update data in database
         await mutate({
           data: newEntry,
         });
-        (newEntry.visitDate = '' + new Date(visitDate.value).getTime()),
-          props.updateLogEntries(newEntry);
-        props.handleClose();
+        // Make visitDate a timestamp as all local entries
+        newEntry.visitDate = '' + new Date(visitDate.value).getTime();
+        // Update local store
+        store.commit('appendLogEntry', newEntry);
+        store.commit('setAddEntryLocation', { lng: null, lat: null });
       } catch (e) {
         console.log(e.message);
         errorOccured.value = true;

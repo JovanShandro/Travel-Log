@@ -19,7 +19,8 @@
     "vue-apollo": "^3.0.8",
     "vue-mapbox": "^0.4.1",
     "vue-mapbox-ts": "^0.6.2",
-    "vue-router": "^4.0.11"
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.2.0",
