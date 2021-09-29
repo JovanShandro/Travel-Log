@@ -16,7 +16,7 @@ import redis from 'redis';
 import { buildSchema, NonEmptyArray } from 'type-graphql';
 
 const RedisStore = connectRedis(session);
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(process.env.REDIS_URL as string);
 
 export default async (
   resolvers: NonEmptyArray<any> | NonEmptyArray<string>,
