@@ -5,6 +5,7 @@ This a small fullstack application I have built in my free time. The server is c
 ## Setup
 
 You first need to start a redis server locally and also create a postgres database named `travel_log`.
+Also rename the `.env.example` file in the server folder to just `.env`.
 
 ## How to run
 
